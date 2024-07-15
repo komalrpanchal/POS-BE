@@ -36,7 +36,6 @@ const createSendToken = (user, statusCode, req, res) => {
 exports.signUp = async (req, res, next) => {
     req.body.password = await bcrypt.hash(req.body.password, 10);
     const newUser = await User.create(req.body);
-    //console.log("req", req.body);
     //const token = signToken(newUser._id);
     createSendToken(newUser, 201, req, res);
   };
@@ -48,13 +47,10 @@ exports.signUp = async (req, res, next) => {
     if (!email || !password) {
       return next(new AppError("Please provide email or password !!!", 400));
     }
-    //console.log(req.body.password);
   
     // 2) check if user exists and pwd is correct
     const user = await User.findOne({ email }).select("+password");
     const correct = await user.correctPassword(password, user.password);
-    //console.log("user", user);
-    //console.log("pwd", user.password);
   
     if (!user || !correct) {
       return next(new AppError("Incorrect email and password!!!", 401));

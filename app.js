@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const orderRouter = require("./routes/orderRoute");
 const userRouter = require("./routes/userRoutes");
+const categoryRouter = require("./routes/categoryRoutes");
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 const server = http.createServer(app);
@@ -29,23 +30,7 @@ app.set("view engine", "ejs");
 dotenv.config({ path: "./config.env" });
 app.use(express.static(path.join(__dirname, "static")));
 
-const DB = process.env.DATABASE.replace(
-  "<password>",
-  process.env.DATABASE_PASSWORD
-);
-
-// mongoose.connect('mongodb://localhost:27017')
-
-mongoose
-  .connect(DB, {
-    // useNewUrlParser: true,
-    // useCreateIndex: true,
-    // useFindAndModify: false,
-  })
-  .then(() =>
-    // console.log(mongoose.connections),
-    console.log("DB connection successful!")
-  ) .catch(err => console.error('Error connecting to MongoDB:', err));
+mongoose.connect('mongodb://localhost:27017')
 
 app.use(cors());
 app.use(cookieParser());
@@ -54,19 +39,13 @@ app.use(bodyParser.json());
 //ROUTES
 app.use("/api", orderRouter);
 app.use("/api/user", userRouter);
+app.use("/api/category", categoryRouter);
 
-// app.use(express.json({ limit: "10kb" }));
-// app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve("./public")));
 
 app.get('/', (req, res) => {
     return res.sendFile("./public/index.html");
 })
-
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   next();
-// });
 
 server.listen( port, () => {
     console.log('listening on server*: 3000');
@@ -75,10 +54,6 @@ server.listen( port, () => {
 socketServer.listen( serverPort, () => {
     console.info(`Socket server started on 3001`);
 });
-
-// app.all("*", (req, res, next) => {
-//   next(new AppError(`Can't find ${req.originalUrl} on this server !!!`, 404));
-// });
 
 app.use(globalErrorHandler);
 
