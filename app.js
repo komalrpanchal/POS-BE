@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const orderRouter = require("./routes/orderRoute");
 const userRouter = require("./routes/userRoutes");
 const categoryRouter = require("./routes/categoryRoutes");
+const kotRouter = require("./routes/kotRoutes");
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 const server = http.createServer(app);
@@ -30,7 +31,7 @@ app.set("view engine", "ejs");
 dotenv.config({ path: "./config.env" });
 app.use(express.static(path.join(__dirname, "static")));
 
-mongoose.connect('mongodb://localhost:27017')
+mongoose.connect('mongodb://localhost:27017');
 
 app.use(cors());
 app.use(cookieParser());
@@ -40,6 +41,7 @@ app.use(bodyParser.json());
 app.use("/api", orderRouter);
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/kot", kotRouter);
 
 app.use(express.static(path.resolve("./public")));
 

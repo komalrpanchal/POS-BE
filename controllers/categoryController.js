@@ -6,7 +6,7 @@ exports.getAllCategories = async (req, res, next) => {
     res.status(200).json({
       status: "success",
       results: category.length,
-      category
+      data: category
     });
   };
 
